@@ -207,7 +207,17 @@ export class Ctx {
         let folder = vscode.workspace.workspaceFolders[0];
         log.info(folder.uri.fsPath);
 
-        let child = cp.spawn("cargo", ["build", "-p", name, "--message-format", "json"], { cwd: folder.uri.fsPath });
+        let path = folder.uri.fsPath;
+        if (name.includes("/")) {
+            let parts = name.split("/");
+            name = parts[parts.length - 1];
+
+            for (var i = 0; i < parts.length - 1; i++) {
+                path += `/${parts[i]}`;
+            }
+        }
+
+        let child = cp.spawn("cargo", ["build", "-p", name, "--message-format", "json"], { cwd: path });
         child.stderr.setEncoding('utf8');
         child.stdout.setEncoding('utf8');
         let out = rl.createInterface(child.stdout, child.stdin);
