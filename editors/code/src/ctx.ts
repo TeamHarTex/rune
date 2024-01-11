@@ -205,7 +205,6 @@ export class Ctx {
         }
 
         let folder = vscode.workspace.workspaceFolders[0];
-        log.info(folder.uri.fsPath);
 
         let path = folder.uri.fsPath;
         if (name.includes("/")) {
@@ -216,6 +215,8 @@ export class Ctx {
                 path += `/${parts[i]}`;
             }
         }
+        
+        log.info(path);
 
         let child = cp.spawn("cargo", ["build", "-p", name, "--message-format", "json"], { cwd: path });
         child.stderr.setEncoding('utf8');
